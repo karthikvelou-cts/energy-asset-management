@@ -21,7 +21,11 @@ pipeline {
                 // Example: sh 'mvn test'
             }
         }
-
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/karthikvelou-cts/energy-asset-management.git'
+            }
+        }
         stage('Deploy') {
             steps {
                 echo 'Deploying application...'
