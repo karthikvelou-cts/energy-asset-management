@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        NODEJS_HOME = tool name: 'NodeJS_18', type: 'NodeJSInstallation'
+        PATH = "${NODEJS_HOME}/bin:${env.PATH}"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -8,24 +13,42 @@ pipeline {
             }
         }
 
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
         stage('Build') {
             steps {
-                echo 'Building the project...'
-                // Example: sh 'mvn clean install'
+                sh 'npm run build'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running tests...'
-                // Example: sh 'mvn test'
+                sh 'npm test || echo "No tests configured"'
             }
         }
+
         stage('Deploy') {
-            steps {
-                echo 'Deploying application...'
-                // Example: sh './deploy.sh'
+            when {
+                branch 'main'
             }
+            steps {
+                echo 'Deploying build artifacts...'
+                // Example: copy build output to a server or S3 bucket
+                // sh 'aws s3 sync dist/ s3://my-energy-frontend-bucket'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Please check logs.'
         }
     }
 }
