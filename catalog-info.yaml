@@ -3,7 +3,8 @@ apiVersion: backstage.io/v1alpha1
 kind: System metadata: 
 name: energy-management-platform 
 description: "Energy Management Platform" 
-spec: owner: group:catalog-admin 
+spec: 
+  owner: group:catalog-admin 
 
 --- 
 # component entity
