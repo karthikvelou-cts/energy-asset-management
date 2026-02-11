@@ -23,7 +23,7 @@ pipeline {
         stage('Test with Coverage') { 
             steps { 
                 // Run tests with coverage enabled 
-                sh 'npm test -- --coverage' 
+                sh 'npm test --coverage' 
             } 
         }
         stage('SonarQube Analysis') {
