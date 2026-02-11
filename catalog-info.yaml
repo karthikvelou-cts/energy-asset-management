@@ -18,7 +18,7 @@ metadata:
     - experimental
   annotations:
     expensetracker.io/appid: EnergyAssetManagementComponent
-    github.com/project-slug: karthikvelou-cts/energy-asset-management
+    github.com/project-slug: energy-asset-management
     backstage.io/techdocs-ref: dir:.
     # flowsource/aws-pipelines: "flowsource-demo-cd-pipeline"
     flowsource/jenkins-pipelines: "Energy-Asset-Management-Pipeline"
