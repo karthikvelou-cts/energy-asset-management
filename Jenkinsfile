@@ -20,10 +20,10 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                sh 'npm test || echo "No tests configured"'
-            }
+        stage('Test with Coverage') { 
+            steps { 
+                sh 'npm test' 
+            } 
         }
         stage('SonarQube Analysis') {
             steps {
@@ -41,7 +41,8 @@ pipeline {
                                 -Dsonar.projectKey=energy-asset-management \
                                 -Dsonar.sources=. \
                                 -Dsonar.host.url=https://dev.flowsource.next25era.org:447 \
-                                -Dsonar.login=${SQ_TOKEN}
+                                -Dsonar.login=${SQ_TOKEN} \
+                                -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
                             """
                         }
                     }
