@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        // Requires Jenkins NodeJS Plugin; configure a Node installation named "Node 18"
-        nodejs 'Node 18'
-    }
-
     environment {
         CI = 'true'
     }
@@ -13,13 +8,14 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/karthikvelou-cts/energy-asset-management.git'
+                git branch: 'main', url: 'https://github.com/cts-karthikvelou/energy-asset-management/'
             }
         }
 
         stage('Show package info') {
             steps {
                 sh '''
+                    node -v && npm -v
                     if [ ! -f package.json ]; then
                       echo "package.json not found!"
                       exit 1
@@ -34,7 +30,6 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                // Prefer deterministic CI installs; fallback to install if lockfile is missing
                 sh 'npm ci || npm install'
             }
         }
@@ -42,7 +37,6 @@ pipeline {
         stage('Build') {
             when {
                 expression {
-                    // Only run if "build" script exists
                     def pkg = readJSON file: 'package.json'
                     return pkg?.scripts?.build != null
                 }
@@ -60,7 +54,6 @@ pipeline {
         stage('Test with Coverage') {
             when {
                 expression {
-                    // Run only if package.json has a "test" script
                     def pkg = readJSON file: 'package.json'
                     return pkg?.scripts?.test != null
                 }
@@ -70,8 +63,6 @@ pipeline {
             }
             post {
                 always {
-                    // If you generate junit XML (e.g., jest-junit), publish it (optional):
-                    // junit testResults: 'junit-report.xml', allowEmptyResults: true
                     archiveArtifacts artifacts: 'coverage/**', allowEmptyArchive: true
                 }
             }
@@ -80,9 +71,8 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    // Bind SonarQube server config set in Jenkins Global Configuration
                     withSonarQubeEnv('MySonarQubeServer') {
-                        def scannerHome = tool 'SonarScanner'
+                        def scannerHome = tool 'SonarScanner'  // Keep this ONLY if configured in Jenkins
                         withCredentials([string(credentialsId: 'SONARQUBE_TOKEN', variable: 'SQ_TOKEN')]) {
                             sh """
                                 "${scannerHome}/bin/sonar-scanner" \
@@ -99,24 +89,16 @@ pipeline {
         }
 
         stage('Deploy') {
-            when {
-                branch 'main'
-            }
+            when { branch 'main' }
             steps {
                 echo 'Deploying build artifacts...'
-                // Example: sync built files to S3 or your target environment
-                // sh 'aws s3 sync dist/ s3://my-energy-frontend-bucket --delete'
             }
         }
     }
 
     post {
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed. Please check logs.'
-        }
+        success { echo 'Pipeline completed successfully!' }
+        failure { echo 'Pipeline failed. Please check logs.' }
         always {
             archiveArtifacts artifacts: 'dist/**', allowEmptyArchive: true
         }
