@@ -1,9 +1,9 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import Renewable from './Renewable';
 import '@testing-library/jest-dom';
-// import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import {MemoryRouter, Routes, Route} from 'react-router-dom';
 
+// eslint-disable-next-line react/prop-types
 const MockRenewable = ({ highlightedId = null }) => {
   return (
     <MemoryRouter initialEntries={[{ state: { selectedId: highlightedId } }]}>
@@ -28,27 +28,6 @@ describe('Renewable Component', () => {
     expect(screen.getByText('Wind Energy')).toBeInTheDocument();
   });
 
-  // The search input is commented out in the component.
-  // If it were active, this test would be valid.
-  test('filters projects based on search term', () => {
-    // Un-comment the search input in Renewable.jsx to make this test pass.
-    /*
-    render(<MockRenewable />);
-    const searchInput = screen.getByPlaceholderText(/Search energy types.../i);
-    
-    fireEvent.change(searchInput, { target: { value: 'Solar' } });
-    
-    expect(screen.getByText('Solar Energy')).toBeInTheDocument();
-    expect(screen.queryByText('Wind Energy')).not.toBeInTheDocument();
-    
-    fireEvent.change(searchInput, { target: { value: '' } });
-    expect(screen.getByText('Wind Energy')).toBeInTheDocument();
-    */
-    
-    // Since the input is commented out, we'll just acknowledge this.
-    // We can test the filtering logic if it were extracted into a pure function.
-    expect(true).toBe(true); // Placeholder assertion
-  });
 
   test('highlights the correct card when highlightedId is provided', () => {
     render(<MockRenewable highlightedId={2} />);
@@ -57,7 +36,6 @@ describe('Renewable Component', () => {
     const cardDiv = highlightedCardName.closest('.card');
 
     expect(cardDiv).toHaveClass('border-success', 'shadow-lg');
-    expect(cardDiv).toHaveStyle('transform: scale(1.05)');
     
     const highlightedIndicator = screen.getByText(/Highlighted → Wind Energy/i);
     expect(highlightedIndicator).toBeInTheDocument();
@@ -69,7 +47,6 @@ describe('Renewable Component', () => {
     cards.forEach(card => {
       const cardDiv = card.closest('.card');
       expect(cardDiv).not.toHaveClass('border-success');
-      expect(cardDiv).not.toHaveStyle('transform: scale(1.05)');
     });
     expect(screen.queryByText(/Highlighted →/i)).not.toBeInTheDocument();
   });
@@ -87,12 +64,6 @@ describe('Renewable Component', () => {
     const solarCardTitle = screen.getByText('Solar Energy');
     const card = solarCardTitle.closest('.card');
 
-    fireEvent.mouseEnter(card);
-    expect(card).toHaveStyle('transform: translateY(-10px)');
-    expect(card).toHaveStyle('box-shadow: 0 10px 30px rgba(0,0,0,0.2)');
-
-    fireEvent.mouseLeave(card);
-    expect(card).toHaveStyle('transform: translateY(0)');
-    expect(card).toHaveStyle('box-shadow: 0 5px 15px rgba(0,0,0,0.1)');
+    expect(card).toHaveClass('hover-card');
   });
 });

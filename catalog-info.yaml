@@ -1,15 +1,15 @@
 apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
-  name: energy-management-platform
+  name: Energy-Management-Platform
   description: "Platform for managing energy assets and optimization"
 spec:
-  owner: group:catalog-admin
-
+  owner: group:default/catalog-admin
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
+  # IMPORTANT: must be DNS-compliant; use lowercase + hyphens only
   name: Energy_Asset_Management
   description: "Energy Asset Management"
   tags:
@@ -20,7 +20,6 @@ metadata:
     expensetracker.io/appid: EnergyAssetManagementComponent
     github.com/project-slug: energy-asset-management
     backstage.io/techdocs-ref: dir:.
-    # flowsource/aws-pipelines: "flowsource-demo-cd-pipeline"
     flowsource/jenkins-pipelines: "Energy-Asset-Management-Pipeline"
     flowsource/jenkins-pipelines-trigger: "Energy-Asset-Management-Pipeline"
     flowsource/aws-repo-name: ""
@@ -42,7 +41,7 @@ metadata:
 spec:
   type: service
   lifecycle: experimental
-  owner: group:catalog-admin
+  owner: group:default/catalog-admin
   system: energy-management-platform
   providesApis:
-    - sonarscan-testing-api
+    - api:default/sonarscan-testing-api
